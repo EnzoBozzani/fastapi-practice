@@ -1,48 +1,51 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
-
-from .database import Base
+from sqlmodel import Field, SQLModel
+from dotenv import load_dotenv
 
 
-class Admin(Base):
-    __tablename__ = "admins"
-
-    id = Column(Integer, primary_key=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+load_dotenv()
 
 
-class Window(Base):
-    __tablename__ = "windows"
-
-    id = Column(Integer, primary_key=True)
-    title = Column(String)
-    start = Column(String)
-    end = Column(String)
-
-    lectures = relationship("Lecture", back_populates="window")
+class Admin(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    email: str
+    hashed_password: str
 
 
-class Lecture(Base):
-    __tablename__ = "lectures"
+class Window(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    title: str
+    start: str
+    end: str
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String)
-    speaker_id = Column(Integer, ForeignKey("speakers.id"))
-    window_id = Column(Integer, ForeignKey("windows.id"))
-
-    speaker = relationship("Speaker", back_populates="lectures")
-    window = relationship("Window", back_populates="lectures")
+    # lectures: list["Lecture"] = Relationship(
+    #     back_populates="window", cascade_delete=True
+    # )
 
 
-class Speaker(Base):
-    __tablename__ = "speakers"
+# class Speaker(SQLModel):
+#     id: int | None = Field(default=None, primary_key=True)
+#     name: str
+#     company: str
+#     linkedin: str
+#     image: str
+#     bio: str
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    company = Column(String)
-    linkedin = Column(String)
-    image = Column(String)
-    bio = Column(String)
+#     lectures: list["Lecture"] = Relationship(
+#         back_populates="window", cascade_delete=True
+#     )
 
-    lectures = relationship("Lecture", back_populates="window")
+
+# class Lecture(SQLModel, table=True):
+#     id: int | None = Field(default=None, primary_key=True)
+#     title: str
+#     speaker_id: int | None = Field(
+#         default=None, foreign_key=, nullable=False,
+#         ondelete="CASCADE"
+#     )
+#     window_id: int | None = Field(
+#         default=None, foreign_key="window.id", nullable=False,
+#         ondelete="CASCADE"
+#     )
+
+#     speaker: Speaker | None = Relationship(back_populates="lectures")
+#     window: Window | None = Relationship(back_populates="lectures")

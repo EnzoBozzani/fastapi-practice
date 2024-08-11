@@ -1,6 +1,8 @@
-from sqlalchemy.orm import Session
+from sqlmodel import Session, select
 
-from . import models, schemas
+from .models import engine, Window
+
+from . import schemas
 
 
 # def get_user(db: Session, user_id: int):
@@ -38,29 +40,19 @@ from . import models, schemas
 #     return db_item
 
 
-def get_windows(db: Session):
-    return db.query(models.Window).all()
+def get_windows():
+    with Session(engine) as db:
+        statement = select(Window)
+        windows = db.exec(statement).all()
+        return windows
 
 
-def create_speaker(db: Session, speaker: schemas.SpeakerCreate):
-    db_item = models.Speaker(**speaker.model_dump())
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
+def create_window(windowCreate: schemas.WindowCreate):
+    window = Window(**windowCreate.model_dump())
 
+    with Session(engine) as db:
+        db.add(window)
+        db.commit()
+        db.refresh(window)
 
-def create_window(db: Session, window: schemas.WindowCreate):
-    db_item = models.Window(**window.model_dump())
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-
-
-def create_lecture(db: Session, lecture: schemas.LectureCreate):
-    db_item = models.Lecture(**lecture.model_dump())
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
+        return window

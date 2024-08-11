@@ -1,12 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from sqlmodel import Field
 
 
 class AdminBase(BaseModel):
-    email: str
+    email: EmailStr = Field(min_length=3, max_length=50)
 
 
 class AdminCreate(AdminBase):
-    password: str
+    password: str = Field(min_length=6, max_length=50)
 
 
 class Admin(AdminBase):
@@ -14,11 +15,11 @@ class Admin(AdminBase):
     hashed_password: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class LectureBase(BaseModel):
-    title: str
+    title: str = Field(min_length=3, max_length=250)
 
 
 class LectureCreate(LectureBase):
@@ -32,13 +33,13 @@ class Lecture(LectureBase):
     windowId: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class WindowBase(BaseModel):
-    title: str
-    start: str
-    end: str
+    title: str = Field(min_length=3, max_length=250)
+    start: str = Field(min_length=5, max_length=5)
+    end: str = Field(min_length=5, max_length=5)
 
 
 class WindowCreate(WindowBase):
@@ -50,7 +51,7 @@ class Window(WindowBase):
     lectures: list[Lecture] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SpeakerBase(BaseModel):
@@ -70,4 +71,4 @@ class Speaker(SpeakerBase):
     lectures: list[Lecture] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True

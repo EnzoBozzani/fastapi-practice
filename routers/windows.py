@@ -1,9 +1,6 @@
-from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends
-
-from database.queries import get_windows, create_window
-from dependencies import get_db
+from fastapi import APIRouter
 from database.schemas import WindowCreate
+from database.queries import create_window, get_windows
 
 router = APIRouter(
     prefix="/windows",
@@ -12,10 +9,10 @@ router = APIRouter(
 
 
 @router.get("/")
-def get_all(db: Session = Depends(get_db)):
-    return get_windows(db)
+def get_all():
+    return get_windows()
 
 
 @router.post("/")
-def create(window: WindowCreate, db: Session = Depends(get_db)):
-    return create_window(db, window)
+def create(window: WindowCreate):
+    return create_window(window)
