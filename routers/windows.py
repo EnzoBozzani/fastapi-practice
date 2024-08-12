@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from database.schemas import WindowCreate, WindowResponse
-from database.queries import create_window, get_windows
+from database.queries.window import create_window, get_windows
 from utils.dependencies import get_user_by_token
 
 router = APIRouter(
     prefix="/windows",
-    tags=["Windows"],
+    tags=["Window"],
 )
 
 

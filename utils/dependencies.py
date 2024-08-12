@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
 from database.schemas import TokenData
-from database.queries import get_admin
+from database.queries.admin import get_admin
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")

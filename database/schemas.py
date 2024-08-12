@@ -73,6 +73,10 @@ class SpeakerCreate(SpeakerBase):
     pass
 
 
+class SpeakerResponse(SpeakerBase):
+    id: int
+
+
 class Speaker(SpeakerBase):
     id: int
     lectures: list[Lecture] = []

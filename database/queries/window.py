@@ -1,33 +1,9 @@
 from sqlmodel import Session, select
 
-from utils.main import verify_password
 from utils.main import check_for_time_collision
-
-from .models import Window, Admin
-from .main import engine
-from . import schemas
-
-
-def authenticate_admin(email: str, password: str):
-    with Session(engine) as db:
-        statement = select(Admin).where(Admin.email == email)
-        admin = db.exec(statement).first()
-
-        if not admin:
-            return False
-
-        if not verify_password(password, admin.hashed_password):
-            return False
-
-        return admin
-
-
-def get_admin(email: str):
-    with Session(engine) as db:
-        statement = select(Admin).where(Admin.email == email)
-        admin = db.exec(statement).first()
-
-        return admin
+from database.models import Window
+from database.main import engine
+from database import schemas
 
 
 def get_windows():
@@ -58,3 +34,12 @@ def create_window(windowCreate: schemas.WindowCreate):
         db.refresh(window)
 
         return window
+
+
+def delete_window(id: int):
+    with Session(engine) as db:
+        statement = select(Window).where(Window.id == id)
+        window = db.exec(statement).first()
+
+        db.delete(window)
+        db.commit()

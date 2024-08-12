@@ -4,9 +4,9 @@ from dotenv import load_dotenv
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 
-from routers import windows
+from routers import windows, speakers
 from database.schemas import Token
-from database.queries import authenticate_admin
+from database.queries.admin import authenticate_admin
 from utils.constants import ACCESS_TOKEN_EXPIRE_MINUTES
 from utils.main import create_access_token
 
@@ -17,6 +17,7 @@ app = FastAPI()
 
 
 app.include_router(windows.router)
+app.include_router(speakers.router)
 
 
 @app.post('/login', response_model=Token, tags=["Auth"])

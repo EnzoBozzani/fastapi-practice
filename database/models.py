@@ -1,8 +1,4 @@
-from sqlmodel import Field, SQLModel
-from dotenv import load_dotenv
-
-
-load_dotenv()
+from sqlmodel import Field, SQLModel, Relationship
 
 
 class Admin(SQLModel, table=True):
@@ -17,35 +13,35 @@ class Window(SQLModel, table=True):
     start: str
     end: str
 
-    # lectures: list["Lecture"] = Relationship(
-    #     back_populates="window", cascade_delete=True
-    # )
+    lectures: list["Lecture"] = Relationship(
+        back_populates="window", cascade_delete=True
+    )
 
 
-# class Speaker(SQLModel):
-#     id: int | None = Field(default=None, primary_key=True)
-#     name: str
-#     company: str
-#     linkedin: str
-#     image: str
-#     bio: str
+class Speaker(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    name: str
+    company: str
+    linkedin: str
+    image: str
+    bio: str
 
-#     lectures: list["Lecture"] = Relationship(
-#         back_populates="window", cascade_delete=True
-#     )
+    lectures: list["Lecture"] = Relationship(
+        back_populates="speaker", cascade_delete=True
+    )
 
 
-# class Lecture(SQLModel, table=True):
-#     id: int | None = Field(default=None, primary_key=True)
-#     title: str
-#     speaker_id: int | None = Field(
-#         default=None, foreign_key=, nullable=False,
-#         ondelete="CASCADE"
-#     )
-#     window_id: int | None = Field(
-#         default=None, foreign_key="window.id", nullable=False,
-#         ondelete="CASCADE"
-#     )
+class Lecture(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    title: str
+    speaker_id: int | None = Field(
+        default=None, foreign_key="speaker.id", nullable=False,
+        ondelete="CASCADE"
+    )
+    window_id: int | None = Field(
+        default=None, foreign_key="window.id", nullable=False,
+        ondelete="CASCADE"
+    )
 
-#     speaker: Speaker | None = Relationship(back_populates="lectures")
-#     window: Window | None = Relationship(back_populates="lectures")
+    speaker: Speaker | None = Relationship(back_populates="lectures")
+    window: Window | None = Relationship(back_populates="lectures")
