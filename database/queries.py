@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 
-from .models import engine, Window
+from .models import Window, Admin
+from .main import engine
 
 from . import schemas
 
@@ -38,6 +39,13 @@ from . import schemas
 #     db.commit()
 #     db.refresh(db_item)
 #     return db_item
+
+
+def get_admin(email: str):
+    with Session(engine) as db:
+        statement = select(Admin).where(Admin.email == email)
+        admin = db.exec(statement).unique()
+        return admin
 
 
 def get_windows():

@@ -1,6 +1,7 @@
 from sqlmodel import Session
 
-from models import engine, Window
+from .models import Window
+from .main import engine
 
 
 def create_windows():

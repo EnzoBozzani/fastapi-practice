@@ -1,5 +1,4 @@
-from pydantic import BaseModel, EmailStr
-from sqlmodel import Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class AdminBase(BaseModel):
@@ -38,8 +37,16 @@ class Lecture(LectureBase):
 
 class WindowBase(BaseModel):
     title: str = Field(min_length=3, max_length=250)
-    start: str = Field(min_length=5, max_length=5)
-    end: str = Field(min_length=5, max_length=5)
+    start: str = Field(
+        min_length=5, max_length=5, pattern="^([01]\d|2[0-3]):[0-5]\d$"
+    )
+    end: str = Field(
+        min_length=5, max_length=5, pattern="^([01]\d|2[0-3]):[0-5]\d$"
+    )
+
+
+class WindowResponse(WindowBase):
+    id: int
 
 
 class WindowCreate(WindowBase):
