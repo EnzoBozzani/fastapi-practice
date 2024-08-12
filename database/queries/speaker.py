@@ -22,3 +22,17 @@ def create_speaker(speakerCreate: schemas.SpeakerCreate):
         db.refresh(speaker)
 
         return speaker
+
+
+def delete_speaker(id: int):
+    with Session(engine) as db:
+        statement = select(Speaker).where(Speaker.id == id)
+        speaker = db.exec(statement).first()
+
+        if speaker is None:
+            return False
+
+        db.delete(speaker)
+        db.commit()
+
+        return True

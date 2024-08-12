@@ -41,5 +41,10 @@ def delete_window(id: int):
         statement = select(Window).where(Window.id == id)
         window = db.exec(statement).first()
 
+        if window is None:
+            return False
+
         db.delete(window)
         db.commit()
+
+        return True

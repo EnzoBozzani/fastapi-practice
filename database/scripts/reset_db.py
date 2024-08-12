@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Session
 
-from .models import Admin
-from .main import engine
+from database.models import Admin
+from database.main import engine
 
 from utils.main import get_password_hash
 

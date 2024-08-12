@@ -22,14 +22,14 @@ class LectureBase(BaseModel):
 
 
 class LectureCreate(LectureBase):
-    speakerId: str
-    windowId: str
+    speaker_id: int
+    window_id: int
 
 
 class Lecture(LectureBase):
-    id: str
-    speakerId: str
-    windowId: str
+    id: int
+    speaker_id: int
+    window_id: int
 
     class Config:
         from_attributes = True
@@ -50,6 +50,7 @@ class WindowResponse(WindowBase):
 
 
 class WindowCreate(WindowBase):
+    speaker_id: int | None
     pass
 
 
