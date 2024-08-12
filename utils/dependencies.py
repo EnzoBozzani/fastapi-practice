@@ -9,7 +9,7 @@ from database.schemas import TokenData
 from database.queries import get_admin
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 async def get_user_by_token(token: Annotated[str, Depends(oauth2_scheme)]):

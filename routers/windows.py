@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 
 from database.schemas import WindowCreate, WindowResponse
 from database.queries import create_window, get_windows
@@ -21,4 +22,12 @@ def get_all():
         dependencies=[Depends(get_user_by_token)]
 )
 def create(window: WindowCreate):
-    return create_window(window)
+    created = create_window(windowCreate=window)
+
+    if created:
+        return created
+
+    return JSONResponse(
+        status_code=400,
+        content={'error': 'Time collision detected with existing window!'}
+    )

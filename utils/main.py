@@ -3,6 +3,8 @@ import os
 from passlib.context import CryptContext
 from datetime import timedelta, datetime, timezone
 
+from database.models import Window
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -27,3 +29,39 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
         algorithm=os.environ['JWT_ALGORITHM']
     )
     return encoded_jwt
+
+
+def check_for_time_collision(windows: list[Window], current: Window):
+    current_start_hour = float(current.start.split(':')[0])
+    current_start_min = float(current.start.split(':')[1])
+    current_end_hour = float(current.end.split(':')[0])
+    current_end_min = float(current.end.split(':')[1])
+
+    current_interval = [
+        current_start_hour + (current_start_min/60),
+        current_end_hour + (current_end_min/60)
+    ]
+
+    for window in windows:
+        start_hour = float(window.start.split(':')[0])
+        start_min = float(window.start.split(':')[1])
+        end_hour = float(window.end.split(':')[0])
+        end_min = float(window.end.split(':')[1])
+
+        interval = [start_hour + (start_min/60), end_hour + (end_min/60)]
+
+        if (
+            (
+                current_interval[0] > interval[0]
+                and
+                current_interval[0] < interval[1])
+            or
+            (
+                current_interval[1] > interval[0]
+                and
+                current_interval[1] < interval[1]
+            )
+        ):
+            return True
+
+    return False
