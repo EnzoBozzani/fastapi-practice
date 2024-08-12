@@ -7,7 +7,7 @@ load_dotenv()
 
 class Admin(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    email: str
+    email: str = Field(unique=True)
     hashed_password: str
 
 

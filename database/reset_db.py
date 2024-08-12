@@ -1,15 +1,20 @@
 from sqlmodel import SQLModel, Session
 
-from models import Admin
-from main import engine
+from .models import Admin
+from .main import engine
+
+from utils.main import get_password_hash
 
 
 def create_db_and_tables():
+    SQLModel.metadata.drop_all(engine)
     SQLModel.metadata.create_all(engine)
 
 
 def create_user():
-    user = Admin(email="enzo@ibm.com", hashed_password="123456")
+    user = Admin(
+        email="enzo@ibm.com", hashed_password=get_password_hash("123456")
+    )
 
     with Session(engine) as db:
         db.add(user)
