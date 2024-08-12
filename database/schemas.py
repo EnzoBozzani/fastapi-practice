@@ -35,6 +35,12 @@ class Lecture(LectureBase):
         from_attributes = True
 
 
+class LectureResponse(LectureBase):
+    id: int
+    speaker_id: int
+    window_id: int
+
+
 class WindowBase(BaseModel):
     title: str = Field(min_length=3, max_length=250)
     start: str = Field(
@@ -47,6 +53,7 @@ class WindowBase(BaseModel):
 
 class WindowResponse(WindowBase):
     id: int
+    speaker_id: int | None
 
 
 class WindowCreate(WindowBase):
