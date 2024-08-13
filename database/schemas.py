@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
+from database.models import Lecture as DbLecture
 
 
 class AdminBase(BaseModel):
@@ -128,3 +129,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class WindowWithLectures(WindowBase):
+    id: int
+    lectures: list[DbLecture] = []

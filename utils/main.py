@@ -4,6 +4,7 @@ from passlib.context import CryptContext
 from datetime import timedelta, datetime, timezone
 from fastapi import UploadFile
 
+from database.schemas import WindowWithLectures
 from database.models import Window
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -69,6 +70,23 @@ def check_for_time_collision(windows: list[Window], current: Window):
 
 
 async def save_file(id: int, uploadFile: UploadFile):
-    with open(f'./public/{id}.jpg', 'wb') as f:
+    file_extension = uploadFile.content_type.split("/")[1] if uploadFile.content_type is not None else "jpeg"  # noqa: E501
+    with open(f'./public/{id}.{file_extension}', 'wb') as f:
         buffer = await uploadFile.read()
         f.write(buffer)
+
+        return f'/{id}.{file_extension}'
+
+
+def delete_file(imgUrl: str):
+    os.remove(f'./public{imgUrl}')
+
+
+def get_index(list: list[WindowWithLectures], window: Window):
+    index = 0
+    for w in list:
+        if w.id == window.id:
+            return index
+        index += 1
+
+    return None

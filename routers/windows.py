@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from database.schemas import WindowCreate, WindowResponse, WindowUpdate
-from database.queries.window import create_window, get_windows, delete_window, update_window  # noqa: E501
+from database.queries.window import create_window, get_windows, delete_window, update_window, get_windows_with_lectures_and_speakers  # noqa: E501
 from utils.dependencies import get_user_by_token
 
 router = APIRouter(
@@ -67,3 +67,8 @@ def update(id: int, windowUpdate: WindowUpdate):
         )
 
     return update_result['window']
+
+
+@router.get("/lectures")
+def get_with_lectures():
+    return get_windows_with_lectures_and_speakers()

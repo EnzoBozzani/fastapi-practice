@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, Form
 from fastapi.responses import JSONResponse
 from typing import Annotated
 
-from utils.main import save_file
+from utils.main import save_file, delete_file
 from utils.dependencies import get_user_by_token
 from database.schemas import SpeakerCreate, SpeakerResponse, SpeakerUpdate
 from database.queries.speaker import create_speaker, get_speakers, delete_speaker, update_speaker  # noqa: E501
@@ -35,13 +35,13 @@ async def create(
 
     speaker = create_speaker(speakerCreate)
 
-    await save_file(speaker.id, image)
+    path = await save_file(speaker.id, image)
 
-    speakerWithImage = SpeakerUpdate(image=f'/public/{speaker.id}.jpg')
+    speakerWithImage = SpeakerUpdate(image=path)
 
     updatedSpeaker = update_speaker(speaker.id, speakerWithImage)
 
-    return create_speaker(updatedSpeaker)
+    return updatedSpeaker
 
 
 @router.get("/", response_model=list[SpeakerResponse])
@@ -55,9 +55,11 @@ def get_all():
         response_model=SpeakerResponse
 )
 def delete(id: int):
-    deleted = delete_speaker(id)
+    speaker = delete_speaker(id)
 
-    if deleted:
+    if speaker is not None:
+        delete_file(speaker.image)
+
         return JSONResponse(
             status_code=200,
             content={'success': 'Deleted speaker successfully!'}

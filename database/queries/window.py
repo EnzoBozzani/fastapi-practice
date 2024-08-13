@@ -1,8 +1,8 @@
 from sqlmodel import Session, select
 
 from database import schemas
-from utils.main import check_for_time_collision
-from database.models import Window
+from utils.main import check_for_time_collision  # get_index
+from database.models import Window, Lecture, Speaker
 from database.main import engine
 from database.queries.speaker import get_speaker
 
@@ -99,3 +99,24 @@ def update_window(id: int, windowUpdate: schemas.WindowUpdate):
         db.refresh(window)
 
         return {'window': window}
+
+
+def get_windows_with_lectures_and_speakers() -> list[schemas.WindowWithLectures]:  # noqa: E501
+    with Session(engine) as db:
+        statement = select(Window, Lecture, Speaker).join(Lecture).join(Speaker)  # noqa: E501
+
+        windows = db.exec(statement).all()
+
+        print(windows)
+
+        windows_with_lectures: list[schemas.WindowWithLectures] = []
+
+        # for tupl in windows:
+        #     index = get_index(windows_with_lectures, tupl[0])
+        #     if index is None:
+        #         formatted = schemas.WindowWithLectures(**tupl[0].model_dump(), lectures=[tupl[1]])  # noqa: E501
+        #         windows_with_lectures.append(formatted)
+        #     else:
+        #         windows_with_lectures[index].lectures.append(tupl[1])
+
+        return windows_with_lectures

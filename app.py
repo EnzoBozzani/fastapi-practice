@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Depends, HTTPException, UploadFile
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from typing import Annotated
 from dotenv import load_dotenv
 from fastapi.security import OAuth2PasswordRequestForm
@@ -9,7 +10,7 @@ from routers import windows, speakers, lectures
 from database.schemas import Token, AdminCreate
 from database.queries.admin import authenticate_admin, add_admin
 from utils.constants import ACCESS_TOKEN_EXPIRE_MINUTES
-from utils.main import create_access_token, save_file
+from utils.main import create_access_token
 
 load_dotenv()
 
@@ -22,10 +23,7 @@ app.include_router(speakers.router)
 app.include_router(lectures.router)
 
 
-@app.post('/test')
-async def test(file: UploadFile):
-    await save_file(1, file)
-    return {'success': 'success'}
+app.mount("/", StaticFiles(directory="public"), name="public")
 
 
 @app.post('/login', response_model=Token, tags=["Admin"])

@@ -7,7 +7,7 @@ from database.models import Speaker
 
 def get_speakers():
     with Session(engine) as db:
-        statement = select(Speaker)
+        statement = select(Speaker).order_by(Speaker.id)
         speakers = db.exec(statement).all()
 
         return speakers
@@ -22,7 +22,7 @@ def get_speaker(id: int):
 
 
 def create_speaker(speakerCreate: schemas.SpeakerCreate):
-    speaker = Speaker(**speakerCreate.model_dump())
+    speaker = Speaker(**speakerCreate.model_dump(), image="string")
 
     with Session(engine) as db:
         db.add(speaker)
@@ -38,12 +38,12 @@ def delete_speaker(id: int):
         speaker = db.exec(statement).first()
 
         if speaker is None:
-            return False
+            return None
 
         db.delete(speaker)
         db.commit()
 
-        return True
+        return speaker
 
 
 def update_speaker(id: int, speakerUpdate: schemas.SpeakerUpdate):
