@@ -93,6 +93,14 @@ class Speaker(SpeakerBase):
         from_attributes = True
 
 
+class SpeakerUpdate(BaseModel):
+    name: str | None = Field(default=None)
+    company: str | None = Field(default=None)
+    linkedin: str | None = Field(default=None)
+    image: str | None = Field(default=None)
+    bio: str | None = Field(default=None)
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str

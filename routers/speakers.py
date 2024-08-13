@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from utils.dependencies import get_user_by_token
-from database.schemas import SpeakerCreate, SpeakerResponse
-from database.queries.speaker import create_speaker, get_speakers, delete_speaker  # noqa: E501
+from database.schemas import SpeakerCreate, SpeakerResponse, SpeakerUpdate
+from database.queries.speaker import create_speaker, get_speakers, delete_speaker, update_speaker  # noqa: E501
 
 
 router = APIRouter(
@@ -43,4 +43,24 @@ def delete(id: int):
     return JSONResponse(
             status_code=404,
             content={'error': 'Speaker not found!'}
+        )
+
+
+@router.put(
+    "/{id}",
+    response_model=SpeakerResponse,
+    dependencies=[Depends(get_user_by_token)]
+)
+def update(id: int, speakerUpdate: SpeakerUpdate):
+    speaker = update_speaker(id, speakerUpdate)
+
+    if speaker is None:
+        return JSONResponse(
+            status_code=404,
+            content={'error': 'Speaker not found!'}
+        )
+
+    return JSONResponse(
+            status_code=200,
+            content={'success': 'Updated speaker successfully!'}
         )

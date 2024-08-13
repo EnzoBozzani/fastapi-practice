@@ -36,3 +36,24 @@ def delete_speaker(id: int):
         db.commit()
 
         return True
+
+
+def update_speaker(id: int, speakerUpdate: schemas.SpeakerUpdate):
+    with Session(engine) as db:
+        statement = select(Speaker).where(Speaker.id == id)
+        speaker = db.exec(statement).first()
+
+        if speaker is None:
+            return None
+
+        speaker.name = speakerUpdate.name or speaker.name
+        speaker.bio = speakerUpdate.bio or speaker.bio
+        speaker.company = speakerUpdate.company or speaker.company
+        speaker.linkedin = speakerUpdate.linkedin or speaker.linkedin
+        speaker.image = speakerUpdate.image or speaker.image
+
+        db.add(speaker)
+        db.commit()
+        db.refresh(speaker)
+
+        return speaker
