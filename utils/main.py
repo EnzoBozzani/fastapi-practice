@@ -2,6 +2,7 @@ import jwt
 import os
 from passlib.context import CryptContext
 from datetime import timedelta, datetime, timezone
+from fastapi import UploadFile
 
 from database.models import Window
 
@@ -65,3 +66,9 @@ def check_for_time_collision(windows: list[Window], current: Window):
             return True
 
     return False
+
+
+async def save_file(id: int, uploadFile: UploadFile):
+    with open(f'./public/{id}.jpg', 'wb') as f:
+        buffer = await uploadFile.read()
+        f.write(buffer)

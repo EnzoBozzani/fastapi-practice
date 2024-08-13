@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, Form
 from fastapi.responses import JSONResponse
+from typing import Annotated
 
+from utils.main import save_file
 from utils.dependencies import get_user_by_token
 from database.schemas import SpeakerCreate, SpeakerResponse, SpeakerUpdate
 from database.queries.speaker import create_speaker, get_speakers, delete_speaker, update_speaker  # noqa: E501
@@ -17,8 +19,29 @@ router = APIRouter(
         response_model=SpeakerResponse,
         dependencies=[Depends(get_user_by_token)]
 )
-def create(speaker: SpeakerCreate):
-    return create_speaker(speaker)
+async def create(
+        image: UploadFile,
+        name: Annotated[str, Form()],
+        bio: Annotated[str, Form()],
+        company: Annotated[str, Form()],
+        linkedin: Annotated[str, Form()]
+):
+    speakerCreate = SpeakerCreate(
+        name=name,
+        bio=bio,
+        linkedin=linkedin,
+        company=company
+    )
+
+    speaker = create_speaker(speakerCreate)
+
+    await save_file(speaker.id, image)
+
+    speakerWithImage = SpeakerUpdate(image=f'/public/{speaker.id}.jpg')
+
+    updatedSpeaker = update_speaker(speaker.id, speakerWithImage)
+
+    return create_speaker(updatedSpeaker)
 
 
 @router.get("/", response_model=list[SpeakerResponse])

@@ -94,8 +94,11 @@ class SpeakerBase(BaseModel):
     bio: str
 
 
-class SpeakerCreate(SpeakerBase):
-    pass
+class SpeakerCreate(BaseModel):
+    name: str
+    company: str
+    linkedin: str
+    bio: str
 
 
 class SpeakerResponse(SpeakerBase):
