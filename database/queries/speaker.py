@@ -13,6 +13,14 @@ def get_speakers():
         return speakers
 
 
+def get_speaker(id: int):
+    with Session(engine) as db:
+        statement = select(Speaker).where(Speaker.id == id)
+        speaker = db.exec(statement).first()
+
+        return speaker
+
+
 def create_speaker(speakerCreate: schemas.SpeakerCreate):
     speaker = Speaker(**speakerCreate.model_dump())
 

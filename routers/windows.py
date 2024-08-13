@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from database.schemas import WindowCreate, WindowResponse
-from database.queries.window import create_window, get_windows, delete_window
+from database.schemas import WindowCreate, WindowResponse, WindowUpdate
+from database.queries.window import create_window, get_windows, delete_window, update_window  # noqa: E501
 from utils.dependencies import get_user_by_token
 
 router = APIRouter(
@@ -35,8 +35,7 @@ def create(window: WindowCreate):
 
 @router.delete(
         "/{id}",
-        dependencies=[Depends(get_user_by_token)],
-        response_model=WindowResponse
+        dependencies=[Depends(get_user_by_token)]
 )
 def delete(id: int):
     deleted = delete_window(id)
@@ -51,3 +50,20 @@ def delete(id: int):
             status_code=404,
             content={'error': 'Window not found!'}
         )
+
+
+@router.put(
+    "/{id}",
+    dependencies=[Depends(get_user_by_token)],
+    response_model=WindowResponse
+)
+def update(id: int, windowUpdate: WindowUpdate):
+    update_result = update_window(id, windowUpdate)
+
+    if 'error' in update_result:
+        return JSONResponse(
+            status_code=update_result['status_code'],
+            content={'error': update_result['error']}
+        )
+
+    return update_result['window']

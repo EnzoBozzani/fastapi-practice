@@ -44,10 +44,10 @@ class LectureResponse(LectureBase):
 class WindowBase(BaseModel):
     title: str = Field(min_length=3, max_length=250)
     start: str = Field(
-        min_length=5, max_length=5, pattern="^([01]\d|2[0-3]):[0-5]\d$"
+        min_length=5, max_length=5, pattern="^([01]\d|2[0-3]):[0-5]\d$"  # noqa: W605, E501
     )
     end: str = Field(
-        min_length=5, max_length=5, pattern="^([01]\d|2[0-3]):[0-5]\d$"
+        min_length=5, max_length=5, pattern="^([01]\d|2[0-3]):[0-5]\d$"  # noqa: W605, E501
     )
 
 
@@ -67,6 +67,23 @@ class Window(WindowBase):
 
     class Config:
         from_attributes = True
+
+
+class WindowUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=3, max_length=250)
+    start: str | None = Field(
+        default=None,
+        min_length=5,
+        max_length=5,
+        pattern="^([01]\d|2[0-3]):[0-5]\d$"  # noqa: W605, E501
+    )
+    end: str | None = Field(
+        default=None,
+        min_length=5,
+        max_length=5,
+        pattern="^([01]\d|2[0-3]):[0-5]\d$"  # noqa: W605, E501
+    )
+    speaker_id: int | None = Field(default=None)
 
 
 class SpeakerBase(BaseModel):
