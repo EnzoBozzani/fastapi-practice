@@ -13,7 +13,7 @@ router = APIRouter(
 
 
 @router.post(
-        "/",
+        "",
         response_model=LectureResponse,
         dependencies=[Depends(get_user_by_token)]
 )
@@ -21,7 +21,7 @@ def create(lecture: LectureCreate):
     return create_lecture(lecture)
 
 
-@router.get("/", response_model=list[LectureResponse])
+@router.get("", response_model=list[LectureResponse])
 def get_all():
     return get_lectures()
 

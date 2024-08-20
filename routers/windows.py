@@ -11,13 +11,13 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[WindowResponse])
+@router.get("", response_model=list[WindowResponse])
 def get_all():
     return get_windows()
 
 
 @router.post(
-        "/",
+        "",
         response_model=WindowResponse,
         dependencies=[Depends(get_user_by_token)]
 )

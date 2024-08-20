@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 @router.post(
-        "/",
+        "",
         response_model=SpeakerResponse,
         dependencies=[Depends(get_user_by_token)]
 )
@@ -44,7 +44,7 @@ async def create(
     return updatedSpeaker
 
 
-@router.get("/", response_model=list[SpeakerResponse])
+@router.get("", response_model=list[SpeakerResponse])
 def get_all():
     return get_speakers()
 
